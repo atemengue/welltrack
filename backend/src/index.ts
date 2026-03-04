@@ -1,16 +1,19 @@
-import express from 'express';
+import 'dotenv/config';
+import app from './app';
+import prisma from './lib/prisma';
 
-const app = express();
 const PORT = process.env.PORT ?? 3000;
 
-app.use(express.json());
+async function main() {
+  await prisma.$connect();
+  console.log('Database connected');
 
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok' });
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+main().catch((err) => {
+  console.error('Failed to start server:', err);
+  process.exit(1);
 });
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-export default app;
