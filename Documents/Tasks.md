@@ -8,8 +8,8 @@ Tasks are organized by phase, matching the 12-week timeline in the requirements.
 
 ### Project Setup
 - [x] Initialize Node.js/Express project with TypeScript
-- [ ] Configure ESLint, Prettier, and tsconfig
-- [ ] Set up PostgreSQL database (local dev instance)
+- [x] Configure ESLint, Prettier, and tsconfig
+- [x] Set up PostgreSQL database (local dev instance)
 - [ ] Initialize Prisma and connect to the database
 - [ ] Add `.env` support with `dotenv` (DATABASE_URL, JWT secrets, etc.)
 - [ ] Create a basic Express app with a health check endpoint (`GET /api/health`)
