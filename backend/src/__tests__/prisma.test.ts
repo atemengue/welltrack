@@ -1,3 +1,4 @@
+import { afterAll, describe, expect, it } from 'vitest';
 import prisma from '../lib/prisma';
 
 describe('Prisma client', () => {
