@@ -27,23 +27,23 @@ Tasks are organized by phase, matching the 12-week timeline in the requirements.
 
 ### Authentication
 - [x] Implement `POST /api/auth/register` — hash password with bcrypt, return JWT
-- [ ] Implement `POST /api/auth/login` — verify credentials, return access + refresh tokens
+- [x] Implement `POST /api/auth/login` — verify credentials, return access + refresh tokens
 - [ ] Implement `POST /api/auth/refresh` — validate refresh token, issue new access token
 - [ ] Implement `POST /api/auth/logout` — invalidate refresh token
 - [ ] Implement `POST /api/auth/forgot-password` — generate reset token, send email
 - [ ] Implement `POST /api/auth/reset-password` — validate token, update password hash
-- [ ] Write JWT middleware to protect routes (`requireAuth`)
+- [x] Write JWT middleware to protect routes (`requireAuth`)
 
 ### User Endpoints
-- [ ] Implement `GET /api/users/me` — return current user profile
-- [ ] Implement `PATCH /api/users/me` — update display name and timezone
-- [ ] Implement `DELETE /api/users/me` — delete user and cascade all related data
+- [x] Implement `GET /api/users/me` — return current user profile
+- [x] Implement `PATCH /api/users/me` — update display name and timezone
+- [x] Implement `DELETE /api/users/me` — delete user and cascade all related data
 
 ### Symptoms Endpoints
-- [ ] Implement `GET /api/symptoms` — return system defaults + user's custom symptoms
-- [ ] Implement `POST /api/symptoms` — create a custom symptom for the current user
-- [ ] Implement `PATCH /api/symptoms/:id` — update name/category/is_active (own records only)
-- [ ] Implement `DELETE /api/symptoms/:id` — delete custom symptom (block deleting system ones)
+- [x] Implement `GET /api/symptoms` — return system defaults + user's custom symptoms
+- [x] Implement `POST /api/symptoms` — create a custom symptom for the current user
+- [x] Implement `PATCH /api/symptoms/:id` — update name/category/is_active (own records only)
+- [x] Implement `DELETE /api/symptoms/:id` — delete custom symptom (block deleting system ones)
 
 ### Symptom Logs Endpoints
 - [ ] Implement `GET /api/symptom-logs` with `startDate`, `endDate`, `limit`, `offset` query params
