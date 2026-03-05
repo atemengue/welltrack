@@ -26,7 +26,7 @@ Tasks are organized by phase, matching the 12-week timeline in the requirements.
 - [x] Write a seed script for default habits (Sleep Duration, Water Intake, Exercise, Alcohol, Caffeine)
 
 ### Authentication
-- [ ] Implement `POST /api/auth/register` — hash password with bcrypt, return JWT
+- [x] Implement `POST /api/auth/register` — hash password with bcrypt, return JWT
 - [ ] Implement `POST /api/auth/login` — verify credentials, return access + refresh tokens
 - [ ] Implement `POST /api/auth/refresh` — validate refresh token, issue new access token
 - [ ] Implement `POST /api/auth/logout` — invalidate refresh token
