@@ -24,8 +24,23 @@ model User {
   medicationLogs MedicationLog[]
   habits         Habit[]
   habitLogs      HabitLog[]
+  refreshTokens  RefreshToken[]
 
   @@map("users")
+}
+
+// ─── Auth ─────────────────────────────────────────────────────────────────────
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  jti       String   @unique // JWT ID claim — used to invalidate tokens
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("refresh_tokens")
 }
 
 // ─── Symptoms ────────────────────────────────────────────────────────────────

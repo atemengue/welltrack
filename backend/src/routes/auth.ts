@@ -1,10 +1,20 @@
 import bcrypt from 'bcryptjs';
 import { Router } from 'express';
 import { z } from 'zod';
-import { signAccessToken } from '../lib/jwt';
+import { signAccessToken, signRefreshToken } from '../lib/jwt';
 import prisma from '../lib/prisma';
 
 const router = Router();
+
+const USER_SELECT = {
+  id: true,
+  email: true,
+  displayName: true,
+  timezone: true,
+  createdAt: true,
+} as const;
+
+// ── Register ──────────────────────────────────────────────────────────────────
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -16,10 +26,7 @@ router.post('/register', async (req, res, next) => {
   try {
     const parsed = registerSchema.safeParse(req.body);
     if (!parsed.success) {
-      res.status(400).json({
-        error: 'Validation failed',
-        details: parsed.error.flatten().fieldErrors,
-      });
+      res.status(400).json({ error: 'Validation failed', details: parsed.error.flatten().fieldErrors });
       return;
     }
 
@@ -32,15 +39,63 @@ router.post('/register', async (req, res, next) => {
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
-
     const user = await prisma.user.create({
       data: { email, passwordHash, displayName },
-      select: { id: true, email: true, displayName: true, timezone: true, createdAt: true },
+      select: USER_SELECT,
     });
 
     const accessToken = signAccessToken(user.id);
-
     res.status(201).json({ user, accessToken });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ── Login ─────────────────────────────────────────────────────────────────────
+
+const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+});
+
+router.post('/login', async (req, res, next) => {
+  try {
+    const parsed = loginSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: 'Validation failed', details: parsed.error.flatten().fieldErrors });
+      return;
+    }
+
+    const { email, password } = parsed.data;
+
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      res.status(401).json({ error: 'Invalid credentials' });
+      return;
+    }
+
+    const valid = await bcrypt.compare(password, user.passwordHash);
+    if (!valid) {
+      res.status(401).json({ error: 'Invalid credentials' });
+      return;
+    }
+
+    const accessToken = signAccessToken(user.id);
+    const { token: refreshToken, jti, expiresAt } = signRefreshToken(user.id);
+
+    await prisma.refreshToken.create({ data: { userId: user.id, jti, expiresAt } });
+
+    res.json({
+      user: {
+        id: user.id,
+        email: user.email,
+        displayName: user.displayName,
+        timezone: user.timezone,
+        createdAt: user.createdAt,
+      },
+      accessToken,
+      refreshToken,
+    });
   } catch (err) {
     next(err);
   }
