@@ -15,15 +15,15 @@ Tasks are organized by phase, matching the 12-week timeline in the requirements.
 - [x] Create a basic Express app with a health check endpoint (`GET /api/health`)
 
 ### Database Schema
-- [ ] Write Prisma schema for `User`
-- [ ] Write Prisma schema for `Symptom` and `SymptomLog`
-- [ ] Write Prisma schema for `MoodLog`
-- [ ] Write Prisma schema for `Medication` and `MedicationLog`
-- [ ] Write Prisma schema for `Habit` and `HabitLog`
-- [ ] Add indexes on `(user_id, logged_at)` for all log tables
-- [ ] Run initial migration (`prisma migrate dev`)
-- [ ] Write a seed script for default symptoms (Headache, Fatigue, Joint Pain, Muscle Pain, Nausea, Brain Fog, Dizziness, Insomnia, Anxiety, Stomach Pain, Back Pain)
-- [ ] Write a seed script for default habits (Sleep Duration, Water Intake, Exercise, Alcohol, Caffeine)
+- [x] Write Prisma schema for `User`
+- [x] Write Prisma schema for `Symptom` and `SymptomLog`
+- [x] Write Prisma schema for `MoodLog`
+- [x] Write Prisma schema for `Medication` and `MedicationLog`
+- [x] Write Prisma schema for `Habit` and `HabitLog`
+- [x] Add indexes on `(user_id, logged_at)` for all log tables
+- [x] Run initial migration (`prisma migrate dev`)
+- [x] Write a seed script for default symptoms (Headache, Fatigue, Joint Pain, Muscle Pain, Nausea, Brain Fog, Dizziness, Insomnia, Anxiety, Stomach Pain, Back Pain)
+- [x] Write a seed script for default habits (Sleep Duration, Water Intake, Exercise, Alcohol, Caffeine)
 
 ### Authentication
 - [ ] Implement `POST /api/auth/register` — hash password with bcrypt, return JWT
