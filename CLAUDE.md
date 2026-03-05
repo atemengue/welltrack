@@ -101,3 +101,85 @@ When completing tasks form TASKS.md:
   - Any testing notes or considerations
 
 4. Update the task checkbox in TASKS.md to mark it complete
+
+
+### Testing Requirements
+Before marking any tasks as complete:
+1. Write unit test for new functionality
+2. Run the full test suite with `npm test`
+3.  If tests fail:
+  - Analyze the failure output
+  - Fix the code (no the tests, unless tests are incorrect)
+  - Re-Run tests until all pass
+4. For API endpoints, include integration tests that verify
+  - Success responses with valid input
+  - Authentication requirements
+  - Edge cases
+
+
+### Test Commandes
+- Backend tests: `cd backend && npm test`
+- Frontend tests: `cd frontend && npm test`
+- Run specific test file: `npm test --path/to/test.ts`
+- Run test matching pattern: `npm test -- --grep "pattern"`
+
+
+## Documentation Requirements
+
+### README.md
+Keep updated with:
+- Quick start instructions (clone, install, run)
+- Environment variables table with descriptions
+- Available npm scripts and what they do
+
+Update README when:
+- Adding new features or endpoints
+- Changing environment variables
+- Adding new npm scripts or dependencies
+
+### Code Comments
+Add comments when:
+- The "why" isn't obvious from the code
+- There's a non-obvious edge case being handled
+- You're working around a bug or limitation
+- The function has complex parameters or return values
+
+Don't add comments when:
+- The code is self-explanatory
+- You'd just be restating what the code does
+
+For exported functions, use JSDoc format:
+/**
+ * Creates a new symptom log for the authenticated user.
+ * @param userId - The ID of the user creating the log
+ * @param data - The symptom log data
+ * @returns The created symptom log with ID
+ * @throws AppError 404 if symptom doesn't exist
+ */
+
+### API Documentation
+Maintain a simple API reference in /docs/api.md with:
+- Endpoint URL and method
+- Brief description
+- Whether auth is required
+- Request body example (if applicable)
+- Success response example
+
+Format example:
+### Create Symptom Log
+POST /api/symptom-logs (requires auth)
+
+Request:
+{
+  "symptomId": "uuid",
+  "severity": 7,
+  "notes": "Started after lunch"
+}
+
+Response: 201 Created
+{
+  "id": "uuid",
+  "symptomId": "uuid",
+  "severity": 7,
+  ...
+}
