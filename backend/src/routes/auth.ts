@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { Router } from 'express';
 import { z } from 'zod';
-import { signAccessToken, signRefreshToken } from '../lib/jwt';
+import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../lib/jwt';
 import prisma from '../lib/prisma';
 
 const router = Router();
@@ -96,6 +96,77 @@ router.post('/login', async (req, res, next) => {
       accessToken,
       refreshToken,
     });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ── Refresh ───────────────────────────────────────────────────────────────────
+
+const refreshSchema = z.object({
+  refreshToken: z.string().min(1),
+});
+
+router.post('/refresh', async (req, res, next) => {
+  try {
+    const parsed = refreshSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: 'Validation failed', details: parsed.error.flatten().fieldErrors });
+      return;
+    }
+
+    let payload: { sub: string; jti: string };
+    try {
+      payload = verifyRefreshToken(parsed.data.refreshToken);
+    } catch {
+      res.status(401).json({ error: 'Invalid or expired refresh token' });
+      return;
+    }
+
+    const stored = await prisma.refreshToken.findUnique({ where: { jti: payload.jti } });
+    if (!stored || stored.expiresAt < new Date()) {
+      res.status(401).json({ error: 'Invalid or expired refresh token' });
+      return;
+    }
+
+    // Rotate: delete the used token and issue a new pair
+    await prisma.refreshToken.delete({ where: { jti: payload.jti } });
+
+    const accessToken = signAccessToken(payload.sub);
+    const { token: newRefreshToken, jti, expiresAt } = signRefreshToken(payload.sub);
+    await prisma.refreshToken.create({ data: { userId: payload.sub, jti, expiresAt } });
+
+    res.json({ accessToken, refreshToken: newRefreshToken });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ── Logout ────────────────────────────────────────────────────────────────────
+
+const logoutSchema = z.object({
+  refreshToken: z.string().min(1),
+});
+
+router.post('/logout', async (req, res, next) => {
+  try {
+    const parsed = logoutSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json({ error: 'Validation failed', details: parsed.error.flatten().fieldErrors });
+      return;
+    }
+
+    let payload: { sub: string; jti: string };
+    try {
+      payload = verifyRefreshToken(parsed.data.refreshToken);
+    } catch {
+      // Token is already invalid — treat as logged out
+      res.status(204).send();
+      return;
+    }
+
+    await prisma.refreshToken.deleteMany({ where: { jti: payload.jti } });
+    res.status(204).send();
   } catch (err) {
     next(err);
   }

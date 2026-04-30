@@ -28,8 +28,8 @@ Tasks are organized by phase, matching the 12-week timeline in the requirements.
 ### Authentication
 - [x] Implement `POST /api/auth/register` — hash password with bcrypt, return JWT
 - [x] Implement `POST /api/auth/login` — verify credentials, return access + refresh tokens
-- [ ] Implement `POST /api/auth/refresh` — validate refresh token, issue new access token
-- [ ] Implement `POST /api/auth/logout` — invalidate refresh token
+- [x] Implement `POST /api/auth/refresh` — validate refresh token, issue new access token
+- [x] Implement `POST /api/auth/logout` — invalidate refresh token
 - [ ] Implement `POST /api/auth/forgot-password` — generate reset token, send email
 - [ ] Implement `POST /api/auth/reset-password` — validate token, update password hash
 - [x] Write JWT middleware to protect routes (`requireAuth`)
